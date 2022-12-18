@@ -17,3 +17,10 @@ VALUES  (1, 'Manager', 200000, 1),
         (5, 'Sales Lead', 85000, 4),
         (6, 'Sales Rep', 60000, 4),
         (7, 'QA Associate', 75000, 1);        
+
+
+INSERT INTO employee(id, first_name, last_name, role_id, manager_id)
+VALUES  (10, 'Eric', 'Cartman', 1, 1),
+        (2, 'Hulk', 'Hogan', 2, 2),
+        (3, 'Tom', 'Delonge', 7, 3),
+        (4, 'Shane', 'Gillis', 4, 3);
