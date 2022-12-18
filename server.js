@@ -48,10 +48,10 @@ initPrompt = () => {
                 addDepartment();
                 break;
             case 'Add a role':
-                addARole();
+                addRole();
                 break;
             case 'Add an employee':
-                addAnEmployee();
+                addEmployee();
                 break;
             case 'Update employee\'s role':
                 updateEmployeeRole();
@@ -118,11 +118,126 @@ addDepartment = () => {
 
 
 addRole = () => {
-    inquirer.prompt([
-        {
+    connection.query(`SELECT * FROM department;`, (err, res) => {
+        if (err) throw err;
+        let departments = res.map(department => ({ name: department.name, value: department.department_id }));
+        inquirer.prompt([
+            {
+                name: 'title',
+                type: 'input',
+                message: 'What role would you like to add?'
+            },
+            {
+                name: 'salary',
+                type: 'input',
+                message: 'What is the salary for the role?'
+            },
+            {
+                name: 'deptName',
+                type: 'rawlist',
+                message: 'What depeartment does this role belong too?',
+                choices: departments
+            },
+        ]).then((res) => {
+            connection.query(`INSERT INTO role SET ?`),
+            {
+                title: res.title,
+                salary: res.salary,
+                department_id: res.deptName
+            },
+                (err, res) => {
+                    if (err) throw err;
+                    console.log(`${res.title} added to database!`);
+                    initPrompt();
+                }
+        })
+    })
+}
 
-        }
-    ])
+addEmployee = () => {
+    connection.query(`SELECT * FROM role;`, (err, res) => {
+        if (err) throw err;
+        let role = res.map(role => ({ name: role.title, value: role.role_id }));
+        connection.query(`SELECT * FROM employee;`, (err, res) => {
+            if (err) throw err;
+            let employee = res.map(employee => ({ name: employee.first_name + '' + employee.last_name, value: employee.employee_id }));
+            inquirer.prompt([
+                {
+                    name: 'firstName',
+                    type: 'input',
+                    message: 'What is the employees first name?'
+                },
+                {
+                    name: 'lastName',
+                    type: 'input',
+                    message: 'What is the employees last name?'
+                },
+                {
+                    name: 'role',
+                    type: 'rawlist',
+                    message: 'What is this employees role?',
+                    choices: role
+                },
+                {
+                    name: 'manager',
+                    type: 'rawlist',
+                    message: 'Who is this employees manager?',
+                    choices: employee
+                }
+            ]).then((res) => {
+                connection.query(`INSERT INTO employee SET ?`),
+                {
+                    first_name: res.first_name,
+                    last_name: res.last_name,
+                    role_id: res.role_id,
+                    manager_id: res.manager,
+                },
+                    (err, res) => {
+                        if (err) throw err;
+                    }
+                connection.query(`INSERT INTO role SET ?`),
+                {
+                    department_id: res.dept,
+                },
+                    (err, res) => {
+                        if (err) throw err;
+                        console.log(`${res.first_name} ${res.last_name} added to the database!`);
+                        initPrompt();
+                    }
+            })
+        })
+    })
+}
+
+updateEmployeeRole = () => {
+    connection.query(`SELECT * FROM role;`, (err, res) => {
+        if (err) throw err;
+        let role = res.map(role => ({ name: role.title, value: role.role_id }));
+        connection.query(`SELECT * FROM employee;`, (err, res) => {
+            if (err) throw err;
+            let employee = res.map(employee => ({ name: employee.first_name + '' + employee.last_name, value: employee.employee_id }));
+            inquirer.prompt([
+                {
+                    name: 'employee',
+                    type: 'list',
+                    message: 'What employee will have their role updated?',
+                    choices: employee
+                },
+                {
+                    name: 'newRole',
+                    type: 'list',
+                    message: 'What will the new employees role be?',
+                    choices: role
+                },
+            ]),
+                (err, res) => {
+                    if (err) throw err;
+                    console.log('Role changed in the database!');
+                    initPrompt();
+                }
+        })
+
+    })
 }
 
 initPrompt();
