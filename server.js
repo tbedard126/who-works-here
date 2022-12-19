@@ -26,7 +26,7 @@ initPrompt = () => {
     inquirer.prompt([
         {
             name: 'initialInquiry',
-            type: 'rawlist',
+            type: 'list',
             message: 'Welcome to the employee database application. Please make a selection on what you would like to do.',
             choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update employee\'s role', 'Exit program']
         }
@@ -133,26 +133,28 @@ addRole = () => {
                 message: 'What is the salary for the role?'
             },
             {
-                name: 'deptName',
-                type: 'rawlist',
+                name: 'departmentName',
+                type: 'list',
                 message: 'What depeartment does this role belong too?',
                 choices: departments
             },
-        ]).then((res) => {
-            connection.query(`INSERT INTO role SET ?`),
-            {
-                title: res.title,
-                salary: res.salary,
-                department_id: res.deptName
-            },
+        ]).then((response) => {
+            connection.query(`INSERT INTO role SET ?`,
+                {
+                    title: response.title,
+                    salary: response.salary,
+                    department_id: response.departmentName
+                },
                 (err, res) => {
                     if (err) throw err;
                     console.log(`${res.title} added to database!`);
                     initPrompt();
                 }
+            )
         })
     })
 }
+
 
 addEmployee = () => {
     connection.query(`SELECT * FROM role;`, (err, res) => {
@@ -184,24 +186,24 @@ addEmployee = () => {
                     message: 'Who is this employees manager?',
                     choices: employee
                 }
-            ]).then((res) => {
-                connection.query(`INSERT INTO employee SET ?`),
-                {
-                    first_name: res.first_name,
-                    last_name: res.last_name,
-                    role_id: res.role_id,
-                    manager_id: res.manager,
-                },
+            ]).then((response) => {
+                connection.query(`INSERT INTO employee SET ?`,
+                    {
+                        first_name: response.first_name,
+                        last_name: response.last_name,
+                        role_id: response.role_id,
+                        manager_id: response.manager,
+                    }),
                     (err, res) => {
                         if (err) throw err;
                     }
-                connection.query(`INSERT INTO role SET ?`),
-                {
-                    department_id: res.dept,
-                },
+                connection.query(`INSERT INTO role SET ?`,
+                    {
+                        department_id: response.dept,
+                    }),
                     (err, res) => {
                         if (err) throw err;
-                        console.log(`${res.first_name} ${res.last_name} added to the database!`);
+                        console.log(`${response.first_name} ${response.last_name} added to the database!`);
                         initPrompt();
                     }
             })
@@ -228,15 +230,24 @@ updateEmployeeRole = () => {
                     type: 'list',
                     message: 'What will the new employees role be?',
                     choices: role
-                },
-            ]),
-                (err, res) => {
-                    if (err) throw err;
-                    console.log('Role changed in the database!');
-                    initPrompt();
                 }
+            ]).then((response) => {
+                connection.query(`UPDATE employee SET ? WHERE ?`,
+                    [
+                        {
+                            role_id: response.newRole,
+                        },
+                        {
+                            employee_id: response.employee,
+                        },
+                    ],
+                    (err, res) => {
+                        if (err) throw err;
+                        console.log(`Successfully updated role!`);
+                        initPrompt();
+                    })
+            })
         })
-
     })
 }
 
