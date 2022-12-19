@@ -120,7 +120,7 @@ addDepartment = () => {
 addRole = () => {
     connection.query(`SELECT * FROM department;`, (err, res) => {
         if (err) throw err;
-        let departments = res.map(department => ({ name: department.name, value: department.department_id }));
+        let departments = res.map(department => ({ name: department.name, value: department.id }));
         inquirer.prompt([
             {
                 name: 'title',
@@ -139,6 +139,8 @@ addRole = () => {
                 choices: departments
             },
         ]).then((response) => {
+            console.log(res)
+            console.log(departments)
             connection.query(`INSERT INTO role SET ?`,
                 {
                     title: response.title,
@@ -146,8 +148,9 @@ addRole = () => {
                     department_id: response.departmentName
                 },
                 (err, res) => {
+                    console.log(response)
                     if (err) throw err;
-                    console.log(`${res.title} added to database!`);
+                    console.log(`${response.title} added to database!`);
                     initPrompt();
                 }
             )
@@ -162,7 +165,7 @@ addEmployee = () => {
         let role = res.map(role => ({ name: role.title, value: role.role_id }));
         connection.query(`SELECT * FROM employee;`, (err, res) => {
             if (err) throw err;
-            let employee = res.map(employee => ({ name: employee.first_name + '' + employee.last_name, value: employee.employee_id }));
+            let employee = res.map(employee => ({ name: employee.first_name + '' + employee.last_name, value: employee.id }));
             inquirer.prompt([
                 {
                     name: 'firstName',
@@ -194,6 +197,7 @@ addEmployee = () => {
                         role_id: response.role_id,
                         manager_id: response.manager,
                     }),
+                    console.log(response),
                     (err, res) => {
                         if (err) throw err;
                     }
@@ -235,10 +239,10 @@ updateEmployeeRole = () => {
                 connection.query(`UPDATE employee SET ? WHERE ?`,
                     [
                         {
-                            role_id: response.newRole,
+                            id: response.newRole,
                         },
                         {
-                            employee_id: response.employee,
+                            id: response.employee,
                         },
                     ],
                     (err, res) => {

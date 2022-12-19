@@ -9,7 +9,7 @@ CREATE TABLE department (
 );
 
 CREATE TABLE role (
-    id INT(100) UNSIGNED PRIMARY KEY,
+    id INT(100) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30),
     salary DECIMAL,
     department_id INT(100) UNSIGNED
