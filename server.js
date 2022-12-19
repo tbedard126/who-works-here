@@ -106,7 +106,7 @@ addDepartment = () => {
             },
             (err, response) => {
                 if (err) throw err;
-                console.log(`\n ${response.newDept} successfully added to database! \n`);
+                console.log(`department added successfully added to database!`);
                 initPrompt();
             })
     })
