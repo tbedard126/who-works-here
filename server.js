@@ -67,9 +67,6 @@ initPrompt = () => {
 }
 
 
-//     connection.query(`SELECT role.role_id, role.title, role.salary, department.department_name, department.department_id FROM role JOIN department ON role.department_id = department.department_id ORDER BY role.role_id ASC;`, (err, res) => {
-
-
 viewAllDepartments = () => {
     connection.query(`SELECT * FROM department;`, (err, res) => {
         if (err) throw err;
@@ -146,6 +143,7 @@ addRole = () => {
                     title: response.title,
                     salary: response.salary,
                     department_id: response.departmentName
+
                 },
                 (err, res) => {
                     console.log(response)
@@ -162,10 +160,11 @@ addRole = () => {
 addEmployee = () => {
     connection.query(`SELECT * FROM role;`, (err, res) => {
         if (err) throw err;
-        let role = res.map(role => ({ name: role.title, value: role.role_id }));
+        let roles = res.map(role => ({ name: role.title, value: role.id }));
         connection.query(`SELECT * FROM employee;`, (err, res) => {
             if (err) throw err;
-            let employee = res.map(employee => ({ name: employee.first_name + '' + employee.last_name, value: employee.id }));
+            let employees = res.map(employee => ({ name: employee.first_name + '' + employee.last_name, value: employee.id }));
+            console.log(employees);
             inquirer.prompt([
                 {
                     name: 'firstName',
@@ -179,37 +178,30 @@ addEmployee = () => {
                 },
                 {
                     name: 'role',
-                    type: 'rawlist',
+                    type: 'list',
                     message: 'What is this employees role?',
-                    choices: role
+                    choices: roles
                 },
                 {
                     name: 'manager',
-                    type: 'rawlist',
+                    type: 'list',
                     message: 'Who is this employees manager?',
-                    choices: employee
+                    choices: employees
                 }
             ]).then((response) => {
                 connection.query(`INSERT INTO employee SET ?`,
                     {
-                        first_name: response.first_name,
-                        last_name: response.last_name,
-                        role_id: response.role_id,
+                        first_name: response.firstName,
+                        last_name: response.lastName,
+                        role_id: response.role,
                         manager_id: response.manager,
                     }),
                     console.log(response),
                     (err, res) => {
                         if (err) throw err;
                     }
-                connection.query(`INSERT INTO role SET ?`,
-                    {
-                        department_id: response.dept,
-                    }),
-                    (err, res) => {
-                        if (err) throw err;
-                        console.log(`${response.first_name} ${response.last_name} added to the database!`);
-                        initPrompt();
-                    }
+                console.log(`employee added to the database!`);
+                initPrompt();
             })
         })
     })

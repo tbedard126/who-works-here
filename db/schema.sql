@@ -9,22 +9,22 @@ CREATE TABLE department (
 );
 
 CREATE TABLE role (
-    id INT(100) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(30),
     salary DECIMAL,
-    department_id INT(100) UNSIGNED
-    -- FOREIGN KEY (department_id)
-    -- REFERENCES department(id)
-    -- FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE
+    department_id INT UNSIGNED,
+    FOREIGN KEY (department_id)  REFERENCES department(id)
+    
+   
 );
 
 CREATE TABLE employee (
-    id INT(100) UNSIGNED  PRIMARY KEY,
+    id INT UNSIGNED  PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(30),
     last_name VARCHAR(30),
-    role_id INT,
-    manager_id INT
-    -- FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE,
-    -- FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL
+    role_id INT UNSIGNED,
+    manager_id INT,
+    FOREIGN KEY (role_id) REFERENCES role(id)
+   
 );
 
