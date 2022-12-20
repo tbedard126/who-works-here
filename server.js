@@ -1,15 +1,6 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-// const table = require('console.table');
-// const sequelize = require('../config/connection');
-
-
-
-// connection.connect((err) => {
-//     if (err) throw err;
-//     console.log(`Connected as id ${connection.threadId} \n`);
-//     initPrompt();
-// });
+// const connection = require('./connection/connection.js')
 
 
 const connection = mysql.createConnection({
@@ -136,8 +127,6 @@ addRole = () => {
                 choices: departments
             },
         ]).then((response) => {
-            console.log(res)
-            console.log(departments)
             connection.query(`INSERT INTO role SET ?`,
                 {
                     title: response.title,
@@ -146,7 +135,7 @@ addRole = () => {
 
                 },
                 (err, res) => {
-                    console.log(response)
+
                     if (err) throw err;
                     console.log(`${response.title} added to database!`);
                     initPrompt();
@@ -164,7 +153,7 @@ addEmployee = () => {
         connection.query(`SELECT * FROM employee;`, (err, res) => {
             if (err) throw err;
             let employees = res.map(employee => ({ name: employee.first_name + '' + employee.last_name, value: employee.id }));
-            console.log(employees);
+
             inquirer.prompt([
                 {
                     name: 'firstName',
@@ -196,7 +185,6 @@ addEmployee = () => {
                         role_id: response.role,
                         manager_id: response.manager,
                     }),
-                    console.log(response),
                     (err, res) => {
                         if (err) throw err;
                     }
