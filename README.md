@@ -34,7 +34,7 @@ N/A
 Email: tylerbedard126@gmail.com
 
 Link to video of application in use:
-[Link](https://drive.google.com/file/d/1t7yKpIabhiS9z01Qv0FKyuiN4512WIrP/view)
+[Link](https://drive.google.com/file/d/152yZHI52ONYCkK-stMgX92ejg5Qk8WJq/view)
 
 GitHub: 
 [tbedard126](https://github.com/tbedard126)
